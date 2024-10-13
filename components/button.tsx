@@ -1,36 +1,29 @@
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router';
+import {
+    TouchableHighlight,
+    Text,
+    StyleSheet,
+} from "react-native"
 
 export const ButtonTemplate = (props: any) => {
     return (
-        <Link href="/login">
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.placeholder}>Let's go</Text>
-                </TouchableOpacity>
-            </View>
-        </Link>
-    );
-};
+        <TouchableHighlight
+            underlayColor={'#888be4'}
+            onPress={props.onPress}
+            style={[style.button, props.style]}>
+            <Text style={style.title}> {props.title} </Text>
+        </TouchableHighlight>
+    )
+}
 
-const styles = StyleSheet.create({
-    container: {
-        marginTop: 103,
-        flex: 1,
-        justifyContent: 'center',
-        paddingHorizontal: 10,
-    },
+
+const style = StyleSheet.create({
     button: {
         alignItems: 'center',
         backgroundColor: '#5E62DB',
         padding: 10,
+        width: '100%',
     },
-    countContainer: {
-        alignItems: 'center',
-        padding: 10,
-    },
-
-    placeholder: {
+    title: {
         color: '#FFFFFF'
-    },
-});
+    }
+})

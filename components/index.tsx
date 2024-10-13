@@ -1,5 +1,7 @@
 import { ButtonTemplate } from "./button";
+import { AlternateLogin } from "./loginApp";
 
 export {
-    ButtonTemplate
+    ButtonTemplate,
+    AlternateLogin
 }

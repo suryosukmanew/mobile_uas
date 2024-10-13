@@ -1,10 +1,13 @@
 import { Text, View, StyleSheet, Image } from "react-native";
 import { ButtonTemplate } from "@/components";
+import { router } from 'expo-router';
 
 export default function Index() {
+  const routeToLogin = () => {
+    router.push('/login')
+  }
   return (
-    <View
-      style={style.section}>
+    <View style={style.section}>
       <Image
         style={style.welcomeImg}
         source={require('./assets/images/welcome-img.png')}
@@ -13,7 +16,10 @@ export default function Index() {
       <Text style={[style.welcomeText, style.welcomeTextAll]}>Welcome to our app</Text>
       <View style={style.container}>
         <Text style={[style.welcomeTextSub, style.welcomeTextAll]}>Now you can fund so you're ready to invest in crypto</Text>
-        <ButtonTemplate />
+        <ButtonTemplate
+          title="Let's Go"
+          onPress={routeToLogin}
+          style={style.button} />
       </View>
     </View>
   );
@@ -48,10 +54,16 @@ const style = StyleSheet.create({
     textAlign: 'center',
     color: '#707070',
     letterSpacing: 1.5,
+    marginBottom: 103,
   },
 
   welcomeImg: {
     width: 300,
     height: 300,
-  }
+  },
+
+  button: {
+    padding: 15,
+    borderRadius: 8,
+  },
 })
