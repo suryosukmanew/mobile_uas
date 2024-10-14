@@ -1,25 +1,18 @@
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Linking } from "react-native";
-import { ButtonTemplate, AlternateLogin } from "@/components";
-import { router } from 'expo-router';
+import { Text, View, StyleSheet, TouchableOpacity, Linking, ScrollView } from "react-native";
+import { ButtonTemplate, AlternateLogin, FormTemplate } from "@/components";
+import { router, Link } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 
-export default function Index() {
+export default function Login() {
     const routeToLogin = () => {
         router.push('/')
     }
 
-    const routeToApple = () => {
-        Linking.openURL('https://www.apple.com');
+    const routeApp = () => {
+        Linking.openURL('https://youtu.be/dQw4w9WgXcQ?si=1dMyymkSdafSk8kn');
     }
-
-    const routeToGoogle = () => {
-        Linking.openURL('https://mail.google.com');
-    }
-
-    const routeToFacebook = () => {
-        Linking.openURL('https://facebook.com');
-    }
+    const rickRoll = routeApp;
 
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
@@ -30,41 +23,39 @@ export default function Index() {
     };
 
     return (
-        <View style={style.section}>
-            <View style={style.container}>
-                <View style={style.appLogo}>
-                    <Text style={[style.first, style.logoFont]}>Docu</Text>
-                    <Text style={[style.last, style.logoFont]}>Flex</Text>
+        <ScrollView style={style.scroll}>
+            <View style={style.section}>
+                <View style={style.container}>
+                    <View style={style.appLogo}>
+                        <Text style={[style.first, style.logoFont]}>Docu</Text>
+                        <Text style={[style.last, style.logoFont]}>Flex</Text>
+                    </View>
+                    <Text style={style.signText}>Sign In</Text>
                 </View>
-                <Text style={style.signText}>Sign In</Text>
-            </View>
-
-            <View style={style.form}>
-                <Text style={style.label}>Email</Text>
-                <TextInput
-                    style={style.input}
-                    placeholder="Enter your email"
-                    onChangeText={setEmail}
-                    value={email}
-                    autoCapitalize="none"
-                />
-                <Text style={style.label}>Password</Text>
-                <View style={style.passwordContainer}>
-                    <TextInput
-                        style={[style.input, style.passwordInput]}
-                        placeholder="Enter your password"
-                        onChangeText={setPassword}
-                        value={password}
-                        secureTextEntry={!isPasswordVisible}
-                        maxLength={8}
+                <View>
+                    <FormTemplate
+                        label='Email'
+                        placeholder='Enter Your Email'
+                        change={setEmail}
+                        value={email}
                     />
-                    <TouchableOpacity onPress={setVisibility} style={style.eyeIcon}>
-                        <Feather
-                            name={isPasswordVisible ? 'eye-off' : 'eye'}
-                            size={24}
-                            color="#989CA8"
+                    <View>
+                        <FormTemplate
+                            label='Password'
+                            placeholder='Enter Your Password'
+                            change={setPassword}
+                            value={password}
+                            max={8}
+                            secure={!isPasswordVisible}
                         />
-                    </TouchableOpacity>
+                        <TouchableOpacity onPress={setVisibility} style={style.eyeIcon}>
+                            <Feather
+                                name={isPasswordVisible ? 'eye-off' : 'eye'}
+                                size={24}
+                                color="#989CA8"
+                            />
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <Text style={style.forgot}>Forgot Password ?</Text>
                 <ButtonTemplate
@@ -78,31 +69,37 @@ export default function Index() {
                     <View style={style.hairline} />
                 </View>
 
-                <AlternateLogin title="Continue with Apple"
-                    onPress={routeToApple}
-                    name='apple'
-                />
-                <AlternateLogin title="Continue with Google"
-                    onPress={routeToGoogle}
-                    name='google'
-                />
-                <AlternateLogin title="Continue with Facebook"
-                    onPress={routeToFacebook}
-                    name='facebook'
-                />
-
-                <Text style={style.createAcc}>Create an Account</Text>
+                <View style={style.container}>
+                    <AlternateLogin title="Continue with Apple"
+                        onPress={rickRoll}
+                        logo='apple'
+                    />
+                    <AlternateLogin title="Continue with Google"
+                        onPress={rickRoll}
+                        logo='google'
+                    />
+                    <AlternateLogin title="Continue with Facebook"
+                        onPress={rickRoll}
+                        logo='facebook'
+                        color='blue'
+                    />
+                    <Link href='/register' style={style.createAcc}>Create an Account</Link>
+                </View>
             </View>
-        </View>
+        </ScrollView >
     );
 }
 
 const style = StyleSheet.create({
+    scroll: {
+        backgroundColor: "#FFFFFF",
+    },
     section: {
         flex: 1,
         justifyContent: "center",
         backgroundColor: "#FFFFFF",
         padding: 20,
+        marginTop: 50
     },
 
     container: {
@@ -131,40 +128,13 @@ const style = StyleSheet.create({
     signText: {
         fontSize: 16,
         color: '#1E2842',
-    },
-
-    form: {
-        width: '100%',
-    },
-
-    label: {
-        fontSize: 16,
-        marginBottom: 8,
-        color: '#333',
-    },
-
-    input: {
-        height: 48,
-        borderColor: '#989CA8',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 12,
-        marginBottom: 16,
-    },
-
-    passwordContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-
-    passwordInput: {
-        flex: 1,
+        fontWeight: '500',
     },
 
     eyeIcon: {
         position: 'absolute',
         right: 15,
-        top: 12,
+        top: 42,
     },
 
     forgot: {
@@ -184,8 +154,6 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-
-
     },
     hairline: {
         borderWidth: 0,
@@ -200,9 +168,8 @@ const style = StyleSheet.create({
     },
 
     createAcc: {
-        color: '#000000',
+        color: '#5E62DB',
         fontSize: 14,
-        textAlign: 'center',
         marginTop: 34,
     },
 });

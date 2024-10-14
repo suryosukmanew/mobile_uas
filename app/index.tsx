@@ -15,7 +15,7 @@ export default function Index() {
 
       <Text style={[style.welcomeText, style.welcomeTextAll]}>Welcome to our app</Text>
       <View style={style.container}>
-        <Text style={[style.welcomeTextSub, style.welcomeTextAll]}>Now you can fund so you're ready to invest in crypto</Text>
+        <Text style={[style.welcomeTextSub, style.welcomeTextAll]}>Now you can fund your account so you’re ready to invest in crypto</Text>
         <ButtonTemplate
           title="Let's Go"
           onPress={routeToLogin}
@@ -53,7 +53,7 @@ const style = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: '#707070',
-    letterSpacing: 1.5,
+    letterSpacing: 1,
     marginBottom: 103,
   },
 

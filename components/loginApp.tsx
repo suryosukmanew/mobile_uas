@@ -4,7 +4,7 @@ import {
     Text,
     StyleSheet,
 } from "react-native"
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export const AlternateLogin = (props: any) => {
     return (
@@ -13,7 +13,7 @@ export const AlternateLogin = (props: any) => {
             onPress={props.onPress}
             style={[style.button, props.style]}>
             <View style={style.container}>
-                <FontAwesome name={props.name} size={24} color={props.color} />
+                <FontAwesome5 name={props.logo} size={24} color={props.color} />
                 <Text style={style.title}> {props.title} </Text>
             </View>
         </TouchableHighlight>
