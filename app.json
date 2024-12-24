@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "UTS_Mobile",
-    "slug": "UTS_Mobile",
+    "name": "mobile_uts",
+    "slug": "mobile_uts",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
