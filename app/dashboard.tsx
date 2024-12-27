@@ -1,55 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ToastAndroid, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    Dimensions,
+    ScrollView,
+    TouchableOpacity,
+} from 'react-native';
+
+const { width } = Dimensions.get('window'); // Mendapatkan lebar layar
+const images = [
+    require('./assets/images/image1.png'), // Ganti dengan nama file gambar Anda
+    require('./assets/images/image2.png'),
+    require('./assets/images/image3.png'),
+];
 
 export default function Dashboard() {
-    const [userData, setUserData] = useState({ name: '', email: '' });
-    const router = useRouter();
+    const [currentIndex, setCurrentIndex] = useState(0);
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const token = await AsyncStorage.getItem('userToken');
-                const storedEmail = await AsyncStorage.getItem('userEmail');
-
-                if (!token || !storedEmail) {
-                    ToastAndroid.show('User data not found', ToastAndroid.SHORT);
-                    return;
-                }
-                const name = await AsyncStorage.getItem('userName');
-                setUserData({
-                    name: name || '',
-                    email: storedEmail
-                });
-
-            } catch (err) {
-                console.log('Error fetching user data:', err);
-                ToastAndroid.show('Failed to fetch user data', ToastAndroid.SHORT);
-            }
-        };
-
-        fetchUserData();
-    }, []);
-
-    const handleLogout = async () => {
-        try {
-            await AsyncStorage.clear();
-            ToastAndroid.show('Logged out successfully', ToastAndroid.SHORT);
-            router.replace('/login');
-        } catch (err) {
-            console.log('Error during logout:', err);
-            ToastAndroid.show('Failed to logout', ToastAndroid.SHORT);
-        }
+    const handleScroll = (event) => {
+        const slide = Math.round(event.nativeEvent.contentOffset.x / width);
+        setCurrentIndex(slide);
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Welcome, {userData.name}!</Text>
-            <Text style={styles.subtitle}>Email: {userData.email}</Text>
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                <Text style={styles.logoutButtonText}>Logout</Text>
-            </TouchableOpacity>
+            {/* Carousel */}
+            <ScrollView
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onScroll={handleScroll}
+                style={styles.scrollView}
+            >
+                {images.map((image, index) => (
+                    <View key={index} style={styles.imageContainer}>
+                        <Image source={image} style={styles.image} />
+                    </View>
+                ))}
+            </ScrollView>
+
+            {/* Pagination */}
+            <View style={styles.pagination}>
+                {images.map((_, index) => (
+                    <View
+                        key={index}
+                        style={[
+                            styles.dot,
+                            currentIndex === index && styles.activeDot,
+                        ]}
+                    />
+                ))}
+            </View>
+
+            {/* Text and Button */}
+            <View style={styles.textContainer}>
+                <Text style={styles.title}>Explore the world easily</Text>
+                <Text style={styles.subtitle}>To your desire</Text>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Get Started</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -57,28 +69,58 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FFFFFF',
+    },
+    scrollView: {
+        flexGrow: 0,
+    },
+    imageContainer: {
+        width: width,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+    },
+    image: {
+        width: '80%',
+        height: 300,
+        resizeMode: 'contain',
+    },
+    pagination: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 16,
+    },
+    dot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#E0E0E0',
+        marginHorizontal: 4,
+    },
+    activeDot: {
+        backgroundColor: '#FF4D4D',
+    },
+    textContainer: {
+        alignItems: 'center',
+        marginTop: 24,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#1B243C',
+        color: '#000000',
     },
     subtitle: {
         fontSize: 16,
-        color: '#4B5368',
+        color: '#666666',
         marginTop: 8,
     },
-    logoutButton: {
+    button: {
         marginTop: 20,
-        paddingVertical: 12,
-        paddingHorizontal: 24,
         backgroundColor: '#FF4D4D',
+        paddingHorizontal: 24,
+        paddingVertical: 12,
         borderRadius: 8,
     },
-    logoutButtonText: {
+    buttonText: {
         color: '#FFFFFF',
         fontSize: 16,
         fontWeight: 'bold',

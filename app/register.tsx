@@ -1,218 +1,223 @@
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity, ToastAndroid } from "react-native";
-import Octicons from '@expo/vector-icons/Octicons';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { ButtonTemplate, FormTemplate } from "@/components";
-import { router } from 'expo-router';
-import CApi from '../lib/CApi';
-import { useSelector, useDispatch } from 'react-redux';
-import { setData, resetData } from '../store/reducer/loginReducer';
-import React from "react";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  CheckBox,
+} from "react-native";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function Register() {
-    const registerForm = useSelector((state) => state.login.loginInput);
-    const dispatch = useDispatch();
+  const [isChecked, setIsChecked] = useState(false);
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+  });
 
-    const onChangeValue = (payload: any) => {
-        dispatch(setData({ ...registerForm, ...payload }));
-    };
+  const onChangeValue = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
 
-    const onSaveData = async () => {
-        try {
-            if (registerForm.password !== registerForm.confirm_password) {
-                ToastAndroid.show("Passwords do not match!", ToastAndroid.SHORT);
-                return;
-            }
+  const handleRegister = () => {
+    if (!isChecked) {
+      alert("Please agree to the terms and conditions!");
+      return;
+    }
+    alert("Registration successful!");
+  };
 
-            const { data } = await CApi.post('/register', registerForm, {
-                headers: { 'Content-Type': 'text/plain' }
-            });
+  return (
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        {/* Header */}
+        <Text style={styles.title}>Get Started</Text>
+        <Text style={styles.subtitle}>by creating a free account.</Text>
 
-            ToastAndroid.show("Register Success", ToastAndroid.SHORT);
+        {/* Input Full Name */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Full name"
+            placeholderTextColor="#B0B0B0"
+            value={form.fullName}
+            onChangeText={(value) => onChangeValue("fullName", value)}
+          />
+          <MaterialIcons
+            name="person"
+            size={20}
+            color="#B0B0B0"
+            style={styles.icon}
+          />
+        </View>
 
-            dispatch(resetData());
-            router.push('/login')
-        } catch (error: any) {
-            const msg = error?.response?.data?.message || error?.message || 'Something went wrong';
-            ToastAndroid.show(msg, ToastAndroid.SHORT);
-        }
-    };
+        {/* Input Email */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Valid email"
+            placeholderTextColor="#B0B0B0"
+            value={form.email}
+            onChangeText={(value) => onChangeValue("email", value)}
+          />
+          <MaterialIcons
+            name="email"
+            size={20}
+            color="#B0B0B0"
+            style={styles.icon}
+          />
+        </View>
 
-    const routeBack = () => {
-        router.push('/login');
-    };
+        {/* Input Phone Number */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Phone number"
+            placeholderTextColor="#B0B0B0"
+            value={form.phoneNumber}
+            onChangeText={(value) => onChangeValue("phoneNumber", value)}
+          />
+          <MaterialIcons
+            name="phone"
+            size={20}
+            color="#B0B0B0"
+            style={styles.icon}
+          />
+        </View>
 
-    // Validasi password
-    const isPasswordValid = registerForm.password?.length >= 8;
-    const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(registerForm.password);
+        {/* Input Password */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Strong Password"
+            placeholderTextColor="#B0B0B0"
+            secureTextEntry
+            value={form.password}
+            onChangeText={(value) => onChangeValue("password", value)}
+          />
+          <MaterialIcons
+            name="lock"
+            size={20}
+            color="#B0B0B0"
+            style={styles.icon}
+          />
+        </View>
 
-    return (
-        <ScrollView style={style.scroll}>
-            <View style={style.section}>
-                <View style={style.navbar}>
-                    <TouchableOpacity onPress={routeBack} style={style.backButton}>
-                        <Octicons name="chevron-left" size={24} color="black" />
-                    </TouchableOpacity>
-                    <Text style={[style.navPlaceholder, style.fontFamily]}>Register Account</Text>
-                </View>
+        {/* Checkbox and Terms */}
+        <View style={styles.checkboxContainer}>
+          <CheckBox
+            value={isChecked}
+            onValueChange={setIsChecked}
+            style={styles.checkbox}
+          />
+          <Text style={styles.checkboxText}>
+            By checking the box you agree to our{" "}
+            <Text style={styles.termsText}>Terms and Conditions</Text>.
+          </Text>
+        </View>
 
-                <View style={style.container}>
-                    <View style={style.shape}>
-                        <AntDesign name="lock1" size={24} color="#5E62DB" />
-                    </View>
-                    <Text style={[style.title, style.fontFamily]}>Create New Account</Text>
-                    <Text style={[style.subtitle, style.fontFamily]}>
-                        Your new password must be different from previously used passwords.
-                    </Text>
-                </View>
+        {/* Button Next */}
+        <TouchableOpacity style={styles.nextButton} onPress={handleRegister}>
+          <Text style={styles.nextButtonText}>Next</Text>
+          <AntDesign name="arrowright" size={16} color="#FFFFFF" />
+        </TouchableOpacity>
 
-                <FormTemplate
-                    style={[style.input, { borderRadius: 10 }]}
-                    label="Name"
-                    placeholder="Enter Your Name"
-                    change={(val: any) => onChangeValue({ name: val })}
-                    value={registerForm.name}
-                />
-
-                <FormTemplate
-                    style={[style.input, { borderRadius: 10 }]}
-                    label="Email"
-                    placeholder="Enter Your Email"
-                    change={(val: any) => onChangeValue({ email: val })}
-                    value={registerForm.email}
-                />
-
-                <FormTemplate
-                    style={[style.input, { borderRadius: 10 }]}
-                    label="New Password*"
-                    placeholder="Enter Your New Password"
-                    change={(val: any) => onChangeValue({ password: val })}
-                    value={registerForm.password}
-                    max={8}
-                    secure={true}
-                />
-
-                <FormTemplate
-                    style={[style.input, { borderRadius: 10 }]}
-                    label="Phone No*"
-                    placeholder="Phone No"
-                    change={(val: any) => onChangeValue({ confirm_password: val })}
-                    value={registerForm.confirm_password}
-                    max={8}
-                    secure={true}
-                />
-
-                {/* Validasi Password */}
-                <View style={style.check}>
-                    <AntDesign
-                        name={isPasswordValid ? "checkcircle" : "closecircle"}
-                        size={13}
-                        color={isPasswordValid ? "#5E62DB" : "red"}
-                    />
-                    <Text style={style.checkStatus}>Must be at least 8 characters</Text>
-                </View>
-
-                <View style={style.check}>
-                    <AntDesign
-                        name={hasSpecialCharacter ? "checkcircle" : "closecircle"}
-                        size={13}
-                        color={hasSpecialCharacter ? "#5E62DB" : "red"}
-                    />
-                    <Text style={style.checkStatus}>Must contain one special character</Text>
-                </View>
-
-                <ButtonTemplate
-                    style={style.button}
-                    title="Submit"
-                    onPress={onSaveData}
-                />
-            </View>
-        </ScrollView>
-    );
+        {/* Already a member */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Already a member? </Text>
+          <TouchableOpacity>
+            <Text style={styles.footerLink}>Log In</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
+  );
 }
 
-const style = StyleSheet.create({
-    fontFamily: {
-        fontFamily: 'sans-serif',
-    },
-
-    scroll: {
-        backgroundColor: "#1E2842", // Latar belakang biru gelap
-    },
-
-    section: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: "#1E2842", // Latar belakang biru gelap
-    },
-
-    backButton: {
-        left: -100,
-    },
-
-    navbar: {
-        display: 'flex',
-        flexDirection: 'row',
-        padding: 30,
-        justifyContent: 'center',
-    },
-
-    navPlaceholder: {
-        fontSize: 14,
-        color: '#FFFFFF', // Teks berwarna putih
-        fontWeight: '500',
-    },
-
-    container: {
-        alignItems: 'center',
-    },
-
-    shape: {
-        width: 52,
-        height: 50,
-        backgroundColor: '#EFEFFB',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-    },
-
-    title: {
-        fontSize: 20,
-        color: '#FFFFFF', // Warna teks putih
-        fontWeight: '600',
-        marginTop: 24,
-    },
-
-    subtitle: {
-        color: '#FFFFFF', // Warna teks putih
-        fontSize: 14,
-        width: '70%',
-        textAlign: 'center',
-        marginTop: 6,
-    },
-
-    check: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-
-    checkStatus: {
-        marginLeft: 10,
-        fontSize: 12,
-        color: '#FFFFFF', // Warna teks putih
-    },
-
-    input: {
-        backgroundColor: '#F4E1D2', // Warna krem untuk kolom input
-        padding: 12,
-        marginTop: 12,
-    },
-
-    button: {
-        padding: 15,
-        borderRadius: 23,
-        marginTop: 12,
-        backgroundColor: '#FF8C00', // Warna oranye untuk tombol
-    },
+const styles = StyleSheet.create({
+  scrollView: {
+    backgroundColor: "#FFFFFF",
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#B0B0B0",
+    textAlign: "center",
+    marginVertical: 8,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    borderRadius: 8,
+    marginVertical: 10,
+    paddingHorizontal: 10,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: "#000000",
+    paddingVertical: 12,
+  },
+  icon: {
+    marginLeft: 8,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  checkbox: {
+    marginRight: 10,
+  },
+  checkboxText: {
+    fontSize: 14,
+    color: "#000000",
+  },
+  termsText: {
+    color: "#FF4D4D",
+  },
+  nextButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FF4D4D",
+    padding: 15,
+    borderRadius: 8,
+    marginVertical: 20,
+  },
+  nextButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 8,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  footerText: {
+    fontSize: 14,
+    color: "#B0B0B0",
+  },
+  footerLink: {
+    fontSize: 14,
+    color: "#FF4D4D",
+    fontWeight: "bold",
+  },
 });

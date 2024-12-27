@@ -1,201 +1,190 @@
-import React from 'react';
-import { 
-    Text, 
-    View, 
-    StyleSheet, 
-    TouchableOpacity, 
-    ScrollView, 
-    TextInput, 
-    CheckBox 
-} from "react-native";
-import { Feather } from '@expo/vector-icons';
-import { router, Link } from 'expo-router';
+import React, { useState } from 'react';
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    Image,
+    TouchableOpacity,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Login() {
-    const [username, setUsername] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
-    const [rememberMe, setRememberMe] = React.useState(false);
+export default function LoginScreen() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
-    const togglePasswordVisibility = () => {
-        setIsPasswordVisible(!isPasswordVisible);
+    const navigation = useNavigation();
+
+    const handleNext = () => {
+        navigation.navigate('Register'); // Navigasi ke halaman register
     };
 
-    const handleLogin = () => {
-        // Implementasikan logika login di sini
-        console.log('Logging in with:', { username, password, rememberMe });
-    };
-
-    const handleForgotPassword = () => {
-        // Implementasikan navigasi ke layar lupa password
-        console.log('Navigating to Forgot Password screen');
-        router.push('/forgot-password');
+    const handleRegisterNow = () => {
+        navigation.navigate('Register'); // Navigasi ke halaman register
     };
 
     return (
-        <ScrollView style={styles.scroll}>
-            <View style={styles.section}>
-                <View style={styles.formContainer}>
-                    
-                    {/* Welcome Back Text */}
-                    <Text style={styles.welcomeText}>Welcome Back!</Text>
-
-                    {/* Username Field */}
-                    <Text style={styles.label}>Username</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter Your Username"
-                        placeholderTextColor="#B9BCC4"
-                        onChangeText={setUsername}
-                        value={username}
-                    />
-                    
-                    {/* Password Field */}
-                    <Text style={styles.label}>Password</Text>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter Your Password"
-                            placeholderTextColor="#B9BCC4"
-                            secureTextEntry={!isPasswordVisible}
-                            onChangeText={setPassword}
-                            value={password}
-                        />
-                        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
-                            <Feather
-                                name={isPasswordVisible ? 'eye-off' : 'eye'}
-                                size={24}
-                                color="#989CA8"
-                            />
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Remember Me and Forgot Password */}
-                    <View style={styles.optionsContainer}>
-                        <View style={styles.rememberMeContainer}>
-                            <CheckBox
-                                value={rememberMe}
-                                onValueChange={setRememberMe}
-                                style={styles.checkbox}
-                                tintColors={{ true: '#FBA83C', false: '#B9BCC4' }}
-                            />
-                            <Text style={styles.rememberMeText}>Remember me</Text>
-                        </View>
-                        <TouchableOpacity onPress={handleForgotPassword}>
-                            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Login Button */}
-                    <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                        <Text style={styles.buttonText}>Login</Text>
-                    </TouchableOpacity>
-
-                    {/* Optional: Link to Register */}
-                    <View style={styles.registerContainer}>
-                        <Text style={styles.noAccountText}>
-                            Don't have an account?{" "}
-                            <Link href='/register' style={styles.signUpLink}>Sign Up</Link>
-                        </Text>
-                    </View>
-                </View>
+        <View style={styles.container}>
+            {/* Gambar Header */}
+            <View style={styles.imageContainer}>
+                <Image
+                    source={require('./assets/images/loginHeader.png')} // Ganti dengan nama file gambar header
+                    style={styles.image}
+                />
             </View>
-        </ScrollView>
+
+            {/* Teks Selamat Datang */}
+            <Text style={styles.title}>Welcome back</Text>
+            <Text style={styles.subtitle}>Sign in to access your account</Text>
+
+            {/* Input Email */}
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter your email"
+                    placeholderTextColor="#B0B0B0"
+                    value={email}
+                    onChangeText={setEmail}
+                />
+                <Image
+                    source={require('./assets/images/emailIcon.png')} // Ganti dengan nama file gambar ikon email
+                    style={styles.icon}
+                />
+            </View>
+
+            {/* Input Password */}
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    placeholderTextColor="#B0B0B0"
+                    secureTextEntry={!showPassword}
+                    value={password}
+                    onChangeText={setPassword}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                    <Image
+                        source={
+                            showPassword
+                                ? require('./assets/images/showIcon.png') // Ikon buka mata
+                                : require('./assets/images/hideIcon.png') // Ikon tutup mata
+                        }
+                        style={styles.icon}
+                    />
+                </TouchableOpacity>
+            </View>
+
+            {/* Tombol Remember Me dan Lupa Password */}
+            <View style={styles.row}>
+                <Text style={styles.rememberMe}>Remember me</Text>
+                <TouchableOpacity>
+                    <Text style={styles.forgotPassword}>Forgot password?</Text>
+                </TouchableOpacity>
+            </View>
+
+            {/* Tombol Next */}
+            <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                <Text style={styles.nextButtonText}>Next</Text>
+            </TouchableOpacity>
+
+            {/* Teks Daftar */}
+            <View style={styles.registerContainer}>
+                <Text style={styles.registerText}>New Member? </Text>
+                <TouchableOpacity onPress={handleRegisterNow}>
+                    <Text style={styles.registerLink}>Register now</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    scroll: {
-        backgroundColor: "#1B243C", // Dark background
-    },
-    section: {
+    container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 20,
-        paddingTop: 60,
+        backgroundColor: '#FFFFFF',
+        padding: 24,
+        justifyContent: 'center',
     },
-    formContainer: {
-        alignItems: "center",
-        width: "100%",
+    imageContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
     },
-    welcomeText: {
-        fontSize: 32,
-        color: "#FFFFFF",
+    image: {
+        width: 200,
+        height: 150,
+        resizeMode: 'contain',
+    },
+    title: {
+        fontSize: 28,
         fontWeight: 'bold',
-        marginBottom: 40,
+        color: '#000000',
+        textAlign: 'center',
     },
-    label: {
+    subtitle: {
         fontSize: 16,
-        color: "#FFFFFF",
-        alignSelf: 'flex-start',
-        marginLeft: '12%',
-        marginBottom: 10,
-    },
-    input: {
-        backgroundColor: '#FAD6A5',  // Warna krem
-        color: '#1B243C',  // Teks warna gelap
-        width: '75%',
-        padding: 12,
-        paddingLeft: 20,
-        borderRadius: 8,
-        fontSize: 16,
-        marginBottom: 30,
+        color: '#666666',
+        textAlign: 'center',
+        marginVertical: 8,
     },
     inputContainer: {
-        position: 'relative',
-        width: '75%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#F5F5F5',
+        borderRadius: 8,
+        marginVertical: 10,
+        paddingHorizontal: 10,
     },
-    eyeIcon: {
-        position: 'absolute',
-        right: 15,
-        top: 18,
+    input: {
+        flex: 1,
+        fontSize: 16,
+        color: '#000000',
+        paddingVertical: 12,
     },
-    optionsContainer: {
+    icon: {
+        width: 20,
+        height: 20,
+        tintColor: '#B0B0B0',
+        marginLeft: 10,
+    },
+    row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '75%',
-        marginBottom: 30,
+        marginVertical: 10,
     },
-    rememberMeContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    checkbox: {
-        marginRight: 8,
-    },
-    rememberMeText: {
-        color: '#FFFFFF',
+    rememberMe: {
         fontSize: 14,
+        color: '#666666',
     },
-    forgotPasswordText: {
-        color: '#FBA83C',
+    forgotPassword: {
         fontSize: 14,
+        color: '#FF4D4D',
     },
-    button: {
-        backgroundColor: '#FBA83C',  // Oranye sesuai gambar
-        padding: 15,
+    nextButton: {
+        backgroundColor: '#FF4D4D',
         borderRadius: 8,
-        width: '75%',
+        paddingVertical: 15,
+        justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 10,
+        marginVertical: 20,
     },
-    buttonText: {
-        fontSize: 18,
-        fontWeight: 'bold',
+    nextButtonText: {
         color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     registerContainer: {
-        marginTop: 20,
+        flexDirection: 'row',
+        justifyContent: 'center',
     },
-    noAccountText: {
-        color: '#B9BCC4',
+    registerText: {
         fontSize: 14,
-        textAlign: 'center',
+        color: '#666666',
     },
-    signUpLink: {
-        color: '#FBA83C',
+    registerLink: {
+        fontSize: 14,
+        color: '#FF4D4D',
         fontWeight: 'bold',
     },
-});  
+});
